@@ -86,7 +86,7 @@ App = {
       var account = accounts[0];
       App.contracts.RockPaperScissors.deployed().then(instance => {
         inst = instance;
-        if (playerNumber == 1) {
+        if (playerNumber === 1) {
           // need to send tokens in order for the contract to be able to transfer these at the end of the game.
           return inst.registerPlayer(1, {from: account, value: web3.toWei(5, "ether")});
         }
@@ -152,14 +152,14 @@ App = {
       }).then(() => {
         return inst.getRevealed(playerNumber);
       }).then(string => {
-        if (string != "") {
+        if (string !== "") {
           setRevealed(playerNumber, inst)
         } else {
           // if the reveal was not successful we want to display a message
-          if (playerNumber == 1) {
-            document.getElementById("status-p1").innerHTML = "Could not reveal player shape.";
-          } else if (playerNumber == 2) {
-            document.getElementById("status-p2").innerHTML = "Could not reveal player shape.";
+          if (playerNumber === 1) {
+            document.getElementById("status-p1").textContent = "Could not reveal player shape.";
+          } else if (playerNumber === 2) {
+            document.getElementById("status-p2").textContent = "Could not reveal player shape.";
           }
         }
       }).catch(err => {
@@ -188,11 +188,11 @@ App = {
       }).then(winnerInt => {
         // display a message to notify the players who won the game
         if (winnerInt == 1) {
-          document.getElementById("winner-label").innerHTML = "Player1 won the last game.";
+          document.getElementById("winner-label").textContent = "Player1 won the last game.";
         } else if (winnerInt == 2) {
-          document.getElementById("winner-label").innerHTML = "Player2 won the last game.";
+          document.getElementById("winner-label").textContent = "Player2 won the last game.";
         } else {
-          document.getElementById("winner-label").innerHTML = "The last game was a draw.";
+          document.getElementById("winner-label").textContent = "The last game was a draw.";
         }
         document.getElementById("register1").disabled = false;
         document.getElementById("register2").disabled = false;
@@ -215,7 +215,7 @@ App = {
  *
  */
 function getSelectedShape(playerNumber) {
-  if (playerNumber == 1) {
+  if (playerNumber === 1) {
     return document.getElementById("select-player1").value;
   } else {
     return document.getElementById("select-player2").value;
@@ -232,7 +232,7 @@ function getSelectedShape(playerNumber) {
  *
  */
 function getRandomString(playerNumber) {
-  if (playerNumber == 1) {
+  if (playerNumber === 1) {
     return document.getElementById("str1").value;
   } else {
     return document.getElementById("str2").value;
@@ -248,7 +248,7 @@ function getRandomString(playerNumber) {
  *
  */
 function changeImage(strShape, playerNumber) {
-  if (playerNumber == 1) {
+  if (playerNumber === 1) {
     document.getElementById("img-player1").src = "/img/" + strShape + ".png";
   } else {
     document.getElementById("img-player2").src = "/img/" + strShape + ".png";
@@ -271,14 +271,14 @@ function getStatus(inst) {
 
   // enable all other elements by default
   inst.getAddress(1).then(addr => {
-    if (addr == '0x0000000000000000000000000000000000000000' || addr == '0x') {
+    if (addr === '0x0000000000000000000000000000000000000000') {
       setNotRegistered(1);
     } else {
       setRegistered(1, addr);
     }
   });
   inst.getAddress(2).then(addr => {
-    if (addr == '0x0000000000000000000000000000000000000000' || addr == '0x') {
+    if (addr === '0x0000000000000000000000000000000000000000') {
       setNotRegistered(2);
     } else {
       setRegistered(2, addr);
@@ -313,18 +313,18 @@ function getStatus(inst) {
  *
  */
 function setNotRegistered(playerNumber) {
-  if (playerNumber == 1) {
+  if (playerNumber === 1) {
     document.getElementById("select-player1").disabled = true;
     document.getElementById("str1").disabled = true;
     document.getElementById("lock1").disabled = true;
-    document.getElementById("status-p1").innerHTML = "Please register.";
-    document.getElementById("header-p1").innerHTML = "Player1";
+    document.getElementById("status-p1").textContent = "Please register.";
+    document.getElementById("header-p1").textContent = "Player1";
   } else {
     document.getElementById("select-player2").disabled = true;
     document.getElementById("str2").disabled = true;
     document.getElementById("lock2").disabled = true;
-    document.getElementById("status-p2").innerHTML = "Please register.";
-    document.getElementById("header-p2").innerHTML = "Player2";
+    document.getElementById("status-p2").textContent = "Please register.";
+    document.getElementById("header-p2").textContent = "Player2";
   }
 }
 
@@ -336,17 +336,17 @@ function setNotRegistered(playerNumber) {
  *
  */
 function setRegistered(playerNumber, addr) {
-  if (playerNumber == 1) {
+  if (playerNumber === 1) {
     document.getElementById("register1").disabled = true;
-    document.getElementById("status-p1").innerHTML = "Please lock shape.";
-    document.getElementById("header-p1").innerHTML = "Player1: " + addr;
+    document.getElementById("status-p1").textContent = "Please lock shape.";
+    document.getElementById("header-p1").textContent = "Player1: " + addr;
     document.getElementById("select-player1").disabled = false;
     document.getElementById("str1").disabled = false;
     document.getElementById("lock1").disabled = false;
   } else {
     document.getElementById("register2").disabled = true;
-    document.getElementById("status-p2").innerHTML = "Please lock shape.";
-    document.getElementById("header-p2").innerHTML = "Player2: " + addr;
+    document.getElementById("status-p2").textContent = "Please lock shape.";
+    document.getElementById("header-p2").textContent = "Player2: " + addr;
     document.getElementById("select-player2").disabled = false;
     document.getElementById("str2").disabled = false;
     document.getElementById("lock2").disabled = false;
@@ -361,12 +361,12 @@ function setRegistered(playerNumber, addr) {
  *
  */
 function setLocked(playerNumber, inst) {
-  if (playerNumber == 1) {
-    document.getElementById("status-p1").innerHTML = "Successfully locked player shape.";
+  if (playerNumber === 1) {
+    document.getElementById("status-p1").textContent = "Successfully locked player shape.";
     document.getElementById("lock1").disabled = true;
     document.getElementById("str1").value = "";
   } else {
-    document.getElementById("status-p2").innerHTML = "Successfully locked player shape.";
+    document.getElementById("status-p2").textContent = "Successfully locked player shape.";
     document.getElementById("lock2").disabled = true;
     document.getElementById("str2").value = "";
   }
@@ -381,12 +381,12 @@ function setLocked(playerNumber, inst) {
  *
  */
 function setRevealed(playerNumber, inst) {
-  if (playerNumber == 1) {
-    document.getElementById("status-p1").innerHTML = "Successfully revealed player shape.";
+  if (playerNumber === 1) {
+    document.getElementById("status-p1").textContent = "Successfully revealed player shape.";
     document.getElementById("reveal1").disabled = true;
     document.getElementById("str1").value = "";
   } else {
-    document.getElementById("status-p2").innerHTML = "Successfully revealed player shape.";
+    document.getElementById("status-p2").textContent = "Successfully revealed player shape.";
     document.getElementById("reveal2").disabled = true;
     document.getElementById("str2").value = "";
   }
@@ -410,7 +410,7 @@ function checkBothLocked(inst) {
         if (boolean2) {
           // if both have locked then enable the 'Reveal' button for both players
           document.getElementById("reveal1").disabled = false;
-          document.getElementById("reveal2").disabled = false;;
+          document.getElementById("reveal2").disabled = false;
         }
       });
     }

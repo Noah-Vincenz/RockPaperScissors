@@ -116,13 +116,13 @@ contract RockPaperScissors {
   /**
   * @notice This function is called to reset the contract's variable states for a new game.
   */
-  function resetVariables() public {
+  function resetVariables() private {
     revealedP1Shape = "";
     revealedP2Shape = "";
     player1 = address(0);
     player2 = address(0);
-		hash1 = bytes32(0);
-		hash2 = bytes32(0);
+    hash1 = bytes32(0);
+    hash2 = bytes32(0);
   }
 
   /**
@@ -168,34 +168,34 @@ contract RockPaperScissors {
   function revealShape(int playerNumber, string memory shape, string memory randomStringToHash) public isRegistered bothLocked correctPlayer(playerNumber) {
     bytes32 tempHash = keccak256(bytes(shape)) ^ keccak256(bytes(randomStringToHash));
 
-		if(msg.sender == player1){
-			if(tempHash == hash1){
-				if(stringsEqual(shape, "Rock")) {
-					revealedP1Shape = "Rock";
-				}
+    if(msg.sender == player1) {
+      if(tempHash == hash1) {
+        if(stringsEqual(shape, "Rock")) {
+          revealedP1Shape = "Rock";
+        }
         if(stringsEqual(shape, "Paper")) {
           revealedP1Shape = "Paper";
-				}
+        }
         if(stringsEqual(shape, "Scissors")) {
           revealedP1Shape = "Scissors";
-				}
+        }
         // shape is going to be one of the above
-			}
-		}
-    if(msg.sender == player2){
-			if(tempHash == hash2){
-				if(stringsEqual(shape, "Rock")) {
-					revealedP2Shape = "Rock";
-				}
+      }
+    }
+    if(msg.sender == player2) {
+      if(tempHash == hash2) {
+        if(stringsEqual(shape, "Rock")) {
+          revealedP2Shape = "Rock";
+        }
         if(stringsEqual(shape, "Paper")) {
           revealedP2Shape = "Paper";
-				}
+        }
         if(stringsEqual(shape, "Scissors")) {
           revealedP2Shape = "Scissors";
-				}
-			}
-		}
-	}
+        }
+      }
+    }
+  }
 
   /**
   * @notice This function computes the winner shape from two shapes and returns 1 if player 1 wins, 2 if player 2 wins and 0 if it is a draw.
@@ -222,23 +222,21 @@ contract RockPaperScissors {
   function distributeRewards() public payable bothLocked bothRevealed isRegistered {
 
     int winner = computeWinner(revealedP1Shape, revealedP2Shape);
-
-    if (winner == 1) {
-
-      player1.transfer(10 ether);
-
-    } else if (winner == 2) {
-
-      player2.transfer(10 ether);
-
-    } else {
-      // in the case of a draw, send half money to both parties
-      player1.transfer(5 ether);
-			player2.transfer(5 ether);
-
-    }
+    // save addresses before reset
+    address payable p1 = player1;
+    address payable p2 = player2;
     lastWinner = winner;
     resetVariables();
+
+    if (winner == 1) {
+      p1.transfer(10 ether);
+    } else if (winner == 2) {
+      p2.transfer(10 ether);
+    } else {
+      // in the case of a draw, send half money to both parties
+      p1.transfer(5 ether);
+      p2.transfer(5 ether);
+    }
 
   }
 
@@ -248,17 +246,18 @@ contract RockPaperScissors {
   * @param stringB Second string to compare with.
   * @return true or false depending on whether the two strings are equal.
   */
-  function stringsEqual(string memory stringA, string memory stringB) public pure returns (bool) {
+  function stringsEqual(string memory stringA, string memory stringB) private pure returns (bool) {
     bytes memory a = bytes(stringA);
     bytes memory b = bytes(stringB);
 
     if (a.length != b.length)
         return false;
 
-    for (uint i = 0; i < a.length; i ++)
+    for (uint i = 0; i < a.length; i ++) {
         if (a[i] != b[i])
             return false;
-        return true;
+    }
+    return true;
   }
 
 }
